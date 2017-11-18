@@ -11,8 +11,8 @@ class TweetBox extends Component {
 
   handleChange(text) {
     this.setState({
-    text: text, 
-    charsRemaining: 140 - text.length
+      text: text, 
+      charsRemaining: 140 - text.length
     });
   }
 

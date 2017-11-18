@@ -2,20 +2,48 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import TweetBox from './TweetBox';
+import Tweet from './model/Tweet';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tweets: ['Hello World!', 'Coderschool is the best']
+      tweets: [{
+        text: "Hello",
+        liked: true
+      }, {
+        text: "World",
+        liked: false
+      }]
     }
   }
 
-  handleTweet(tweet) {
+  handleTweet(tweetText) {
+    let tweetObj = {
+      text: tweetText,
+      liked: false
+    }
     this.setState({
-      tweets: this.state.tweets.concat(tweet)
+      tweets: this.state.tweets.concat(tweetObj)
     })
   }
+
+  handleLike(tweet) {
+    let tweets = this.state.tweets.map( (t) => {
+      if(t.text == tweet.text) {
+        return {
+          text: t.text,
+          liked: !t.liked
+        }
+      }
+      return t;
+    });
+
+    this.setState({
+      tweets
+    }) 
+  }
+
   render() {
 		return (
       <div className="App">
@@ -29,7 +57,9 @@ class App extends Component {
           </div>
           <div>
             { this.state.tweets.map( tweet => 
-             <p> {tweet} </p>
+              <Tweet tweet={tweet}
+                handleLike={this.handleLike.bind(this)}
+              />
             )}
           </div>
         </p>
