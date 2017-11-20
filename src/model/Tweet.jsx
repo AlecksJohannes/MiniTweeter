@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+
 class Tweet extends Component {
+
   render() {
     let tweet = this.props.tweet;
     return (
