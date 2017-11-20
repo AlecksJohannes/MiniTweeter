@@ -58,9 +58,9 @@ class App extends Component {
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-							<div class="profile-image">
-								<img src={ProfileImage} class="circular-image" />
-							</div>
+              <div class="profile-image">
+                <img src={ProfileImage} class="circular-image" />
+              </div>
             </Navbar.Brand>
           </Navbar.Header>
           <Nav>
@@ -105,7 +105,7 @@ class App extends Component {
                 )}
               </div>
               <div>
-                  <TweetBox prompt="What's in your mind?" onTweet={this.handleTweet.bind(this)}/>
+                <TweetBox prompt="What's in your mind?" onTweet={this.handleTweet.bind(this)}/>
               </div>
             </Col>
             <Col xs={6} md={3}></Col>
