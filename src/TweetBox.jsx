@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Textarea } from 'reactbulma';
 
 class TweetBox extends Component {
   constructor(props) {
@@ -19,17 +20,19 @@ class TweetBox extends Component {
   render() {
     return (
       <div>
-        <input type="text" 
-          placeholder={this.props.prompt}
-          onChange={(e) => this.handleChange(e.target.value)}
-        />
-        <p>
-          {this.state.charsRemaining}
-        </p>
-        <button
-          onClick={() => this.props.onTweet(this.state.text)}
-          disabled={this.state.charsRemaining < 0}
-        > Tweet </button>
+        <div class="tweetBox">
+          <Textarea type="text" class="tweetBox"
+            placeholder={this.props.prompt}
+            onChange={(e) => this.handleChange(e.target.value)}
+          />
+          <div class="tweetBoxToolbar">
+            <button class="tweetButton"
+              onClick={() => this.props.onTweet(this.state.text)}
+              disabled={this.state.charsRemaining < 0}> 
+              <b>Tweet</b>
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
