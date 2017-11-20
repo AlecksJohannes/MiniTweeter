@@ -20,13 +20,13 @@ class TweetBox extends Component {
   render() {
     return (
       <div>
-        <div class="tweetBox">
-          <Textarea type="text" class="tweetBox"
+        <div className="tweetBox">
+          <Textarea type="text" className="tweetBox"
             placeholder={this.props.prompt}
             onChange={(e) => this.handleChange(e.target.value)}
           />
-          <div class="tweetBoxToolbar">
-            <button class="tweetButton"
+          <div className="tweetBoxToolbar">
+            <button className="tweetButton"
               onClick={() => this.props.onTweet(this.state.text)}
               disabled={this.state.charsRemaining < 0}> 
               <b>Tweet</b>
