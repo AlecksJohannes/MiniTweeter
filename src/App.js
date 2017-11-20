@@ -10,6 +10,8 @@ import ProfileImage from './profile.jpg';
 import { Redirect } from 'react-router-dom';
 import Modal from 'react-modal';
 import miniLogo from './twitter.jpg';
+import { logInUser } from './http/Request';
+import Timestamp from 'react-timestamp';
 
 class App extends Component {
   constructor(props) {
@@ -22,19 +24,27 @@ class App extends Component {
         text: "World",
         liked: false
       }],
-      isModalOpen: true
+      isModalOpen: true,
+      isSuccess: false
     }
     this.closeModal = this.closeModal.bind(this);
   }
 
   closeModal() {
-    if(this.state.text) {
-       this.setState({
-        isModalOpen: false
-      }) 
-    } else {
-      alert('Please input your email');
-    }
+    logInUser(this.state.text)
+    .then((response) => {
+      this.setState({
+        isSuccess: response['data'].status
+      })
+      if(this.state.isSuccess) {
+        localStorage.setItem('current_user', JSON.stringify(response['data'].user))
+        this.setState({
+          isModalOpen: false
+        }) 
+      }
+    }).catch((error) => {
+      alert(error);
+    })
   }
 
   handleTweet(tweetText) {
@@ -159,12 +169,14 @@ class App extends Component {
                 <ControlLabel><b>Email:</b></ControlLabel>
                 <FormControl componentClass="input" placeholder="Your email here" onChange={(e) => this.handleIfNull(e.target.value)} />
               </FormGroup>
+              <Timestamp time='2017-11-20T14:20:48.559Z' precision={1} />
 
-              <Button className="is-primary button" onClick={() => this.closeModal()}>Submit
+              <Button className="is-primary button" onClick={() => { 
+                this.closeModal()}}>Submit
               </Button>
             </form>
           </div>
-				</Modal>
+        </Modal>
       </div>
     );
   }
