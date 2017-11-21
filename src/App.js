@@ -10,22 +10,18 @@ import ProfileImage from './profile.jpg';
 import { Redirect } from 'react-router-dom';
 import Modal from 'react-modal';
 import miniLogo from './twitter.jpg';
-import { logInUser } from './http/Request';
+import { logInUser, getTweets, createTweet, createLike } from './http/Request';
 import Timestamp from 'react-timestamp';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tweets: [{
-        text: "Hello",
-        liked: true
-      }, {
-        text: "World",
-        liked: false
-      }],
+      tweets: [],
       isModalOpen: true,
-      isSuccess: false
+      isSuccess: false,
+      name: "",
+      time: ""
     }
     this.closeModal = this.closeModal.bind(this);
   }
@@ -37,7 +33,13 @@ class App extends Component {
         isSuccess: response['data'].status
       })
       if(this.state.isSuccess) {
+        this.state.user = response['data'].user
         localStorage.setItem('current_user', JSON.stringify(response['data'].user))
+        this.setState({
+          name: response['data'].user.email,
+          time: response['data'].user.created_at
+        })
+        this.handleTweets()
         this.setState({
           isModalOpen: false
         }) 
@@ -47,15 +49,25 @@ class App extends Component {
     })
   }
 
+  handleTweets() {
+    getTweets().then((response) => {
+      this.setState({
+        tweets: response.data
+      })
+    })
+  }
+
   handleTweet(tweetText) {
     let tweetObj = {
-      text: tweetText,
+      description: tweetText,
       liked: false
     }
+    createTweet(tweetText);
     this.setState({
       tweets: this.state.tweets.concat(tweetObj)
     })
   }
+
 
   handleIfNull(text) {
     this.setState({
@@ -64,19 +76,12 @@ class App extends Component {
   }
 
   handleLike(tweet) {
-    let tweets = this.state.tweets.map( (t) => {
-      if(t.text == tweet.text) {
-        return {
-          text: t.text,
-          liked: !t.liked
-        }
+    console.log(tweet.id)
+    createLike(tweet.id).then((response) => {
+      if(response.status) {
+        
       }
-      return t;
-    });
-
-    this.setState({
-      tweets
-    }) 
+    })
   }
 
   render() {
@@ -117,18 +122,23 @@ class App extends Component {
           <Row className="show-grid">
             <Col xs={6} md={3}>
               <div>
-                <h1 className="profile-name">Alecks Johanssen</h1>
+                <h1 className="profile-name">{
+                  this.state.name.substring(0, this.state.name.lastIndexOf("@"))
+                }</h1>
                 <h2 className="profile-link"> 
                   <span>
                     <a href="https://facebook.com/PCGMikeon">
-                      @AlecksJohanssen
+                      { 
+                        this.state.name
+                      }
                     </a>
                   </span>
                 </h2>
                 <h2 className="profile-link"> 
                   <span>
                     <a href="#">
-                      Joined July 2017
+                      Joined 
+                      <Timestamp time={this.state.time} precision={3} />
                     </a>
                   </span>
                 </h2>
@@ -136,13 +146,15 @@ class App extends Component {
             </Col>
             <Col xs={6} md={6}>
               <div>
-                { this.state.tweets.map( tweet => 
-                  <Tweet tweet={tweet}
-                    handleLike={this.handleLike.bind(this)}
-                  />
-                )}
+                { 
+                  this.state.tweets.map((data) => 
+                    <Tweet tweet={data}
+                      handleLike={this.handleLike.bind(this)}
+                    />
+                  )
+                }
               </div>
-              <div>
+              <div style={{ paddingTop: '20px'}}>
                 <TweetBox prompt="What's in your mind?" onTweet={this.handleTweet.bind(this)}/>
               </div>
             </Col>
@@ -169,7 +181,6 @@ class App extends Component {
                 <ControlLabel><b>Email:</b></ControlLabel>
                 <FormControl componentClass="input" placeholder="Your email here" onChange={(e) => this.handleIfNull(e.target.value)} />
               </FormGroup>
-              <Timestamp time='2017-11-20T14:20:48.559Z' precision={1} />
 
               <Button className="is-primary button" onClick={() => { 
                 this.closeModal()}}>Submit
