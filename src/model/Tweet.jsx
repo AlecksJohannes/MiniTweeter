@@ -48,7 +48,7 @@ class Tweet extends Component {
           onClick={() => this.props.handleLike(tweet)}> 
 
           <Icon small>
-            <i className={tweet.likes[0] == null ? "fa fa-heart-o" : "fa fa-heart"}/>
+            <i className={tweet.likes == null || tweet.likes[0] == null ? "fa fa-heart-o" : "fa fa-heart"}/>
           </Icon>
         </Button>
       </div>
